@@ -1,11 +1,12 @@
-module.expors = {
-  entry: './index.js',
+module.exports = {
+  entry: './client/index.jsx',
   output: {
     path: __dirname,
     filename: './bundle.js'
   },
+  context: __dirname,
   devtool: 'source-map',
-  moudle:{
+  module:{
     rules: [{
       test: /\.jsx?$/,
       exclude: /(node_modules|bower_components)/,
