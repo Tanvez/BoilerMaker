@@ -6,13 +6,37 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const db = require('./server/db/models'); // must specify the db used in models not from the db-index file
+const Puppy = require('./server/db/models/puppies');
 const port = process.env.PORT || 3000;
-
+const session = require('express-session');
+const passport = require('passport');
 
 
 app.use(morgan('dev'));// logging middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+//express-session boiler
+app.use(session({
+  secret:process.env.SESSION_SECRET ||'a wildly insecure secret',
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport.initialize);
+app.use(passport.session);
+passport.serializeUser((user, done)=>{
+  try{
+    done(null, user.id);
+  } catch(err) {
+    done(err);
+  }
+});
+passport.deserializeUser((id, done)=>{
+User.findById(id)
+.then(user=> done(null,user))
+.catch(done);
+});
+
 
 app.use('/api', require('./server/apiRoutes'));//ROUTES
 
